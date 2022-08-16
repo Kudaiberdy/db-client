@@ -1,0 +1,18 @@
+{
+    "name": "kudaiberdy/db-client",
+    "description": "db-client microservice",
+    "type": "project",
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "Kudaiberdy\\DbClient\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Kudaiberdy",
+            "email": "kudaiberdy.shagirov@gmail.com"
+        }
+    ],
+    "require": {}
+}
