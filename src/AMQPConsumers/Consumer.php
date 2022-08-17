@@ -2,6 +2,7 @@
 
 namespace App\AMQPConsumers;
 
+use App\DBConnections\Connection;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
@@ -17,6 +18,7 @@ class Consumer
             'guest',
             'guest'
         );
+
         $this->channel = $connection->channel();
         $this->channel->exchange_declare('router', 'direct');
         $this->channel->queue_declare(
@@ -51,8 +53,11 @@ class Consumer
 
     public function processMessage(AMQPMessage $message)
     {
-        $json = $message->getBody() . PHP_EOL;
-        file_put_contents(__DIR__ . '/../../db.txt', $json, FILE_APPEND);
+        $jsonData = json_decode($message->getBody(), true);
+
+        $connection = new Connection();
+        $connection->insert($jsonData);
+
         $message->ack();
     }
 }

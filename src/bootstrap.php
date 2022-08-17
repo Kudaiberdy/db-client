@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Bootstrap;
+
 function run()
 {
-    $connection = new \App\AMQPConsumers\Consumer();
+    $consumer = new \App\AMQPConsumers\Consumer();
 
-    $connection->listen();
+    $consumer->listen();
 }
