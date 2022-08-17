@@ -39,19 +39,4 @@ class Connection extends \PDO
             return $e;
         }
     }
-
-    public function select($key, $value)
-    {
-        try {
-            return $this->connect->query("SELECT * FROM users WHERE $key = '{$value}';")->fetchAll();
-        } catch (\PDOException $e) {
-            return false;
-        }
-    }
-
-    public function index()
-    {
-        return $this->connect->query("SELECT * FROM users;")->fetchAll();
-    }
-
 }
