@@ -2,6 +2,7 @@
 
 namespace App\Connections;
 
+use http\Encoding\Stream\Inflate;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
@@ -12,7 +13,7 @@ class AMQPConnection extends AMQPStreamConnection
     private $routingKey;
     private $channel;
 
-    public function __construct($pathToConf)
+    public function __construct(string $pathToConf)
     {
         $conf = parse_ini_file($pathToConf);
         $host = $conf['host'];
@@ -22,21 +23,21 @@ class AMQPConnection extends AMQPStreamConnection
         parent::__construct($host, $port, $user, $password);
     }
 
-    public function declareConnection($exchange, $queue, $routingKey)
+    public function declareConnection(string $exchange, string $queue, string $routingKey)
     {
         $this->exchange = $exchange;
         $this->queue = $queue;
         $this->routingKey = $routingKey;
         $this->channel = $this->channel();
 
-        $this->channel()->exchange_declare($exchange, 'direct');
-        $this->channel()->queue_declare(
+        $this->channel->exchange_declare($exchange, 'direct');
+        $this->channel->queue_declare(
             $queue,
             false,
             true,
             false
         );
-        $this->channel()->queue_bind($queue, $exchange, $routingKey);
+        $this->channel->queue_bind($queue, $exchange, $routingKey);
     }
 
     public function listen()
@@ -52,14 +53,13 @@ class AMQPConnection extends AMQPStreamConnection
         );
 
         while ($this->channel->is_consuming()) {
-            $this->$this->channel();
+            $this->channel->wait();
         }
     }
 
     public function messageProcessing(AMQPMessage $message)
     {
         $jsonData = json_decode($message->getBody(), true);
-
         $connection = new DBConnection(__DIR__ . '/../../configs/dbconnection.ini');
         $connection->insert($jsonData);
 
