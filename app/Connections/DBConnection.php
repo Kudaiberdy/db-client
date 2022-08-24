@@ -52,7 +52,7 @@ class DBConnection extends \PDO
         }
     }
 
-    public function dumpEmailstoCache($cache)
+    public function dumpEmailsToCache($cache)
     {
         $statment = "SELECT email FROM users";
 
@@ -65,6 +65,7 @@ class DBConnection extends \PDO
         } catch (\PDOException $e) {
             return $e;
         }
-        $cache->add('emails', $emails);
+
+        $cache->set('emails', $emails);
     }
 }

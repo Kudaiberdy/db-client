@@ -15,7 +15,7 @@ function run()
     $cache = new \Memcached();
     $cache->addServer(...parse_ini_file(__DIR__ . '/../configs/memcachedconnection.ini'));
     $cache->delete('emails');
-    $dbConnection->dumpEmailstoCache($cache);
+    $dbConnection->dumpEmailsToCache($cache);
 
     $amqpConnection->listen();
 }

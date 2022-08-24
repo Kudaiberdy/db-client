@@ -63,6 +63,10 @@ class AMQPConnection extends AMQPStreamConnection
         $connection = new DBConnection(__DIR__ . '/../../configs/dbconnection.ini');
         $connection->insert($jsonData);
 
+        $cache = new \Memcached();
+        $cache->addServer(...parse_ini_file(__DIR__ . '/../../configs/memcachedconnection.ini'));
+        $connection->dumpEmailsToCache($cache);
+
         $message->ack();
     }
 }

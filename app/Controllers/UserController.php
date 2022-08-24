@@ -24,8 +24,8 @@ class UserController
         }
 
         $cache->flush();
-        $dbconnection = new DBConnection(__DIR__ . '/../../configs/dbconnection.ini');
-        $res = json_encode($dbconnection->index($key, $value));
+        $dbConnection = new DBConnection(__DIR__ . '/../../configs/dbconnection.ini');
+        $res = json_encode($dbConnection->index($key, $value));
         $cache->add($cacheKey, $res);
         $response->getBody()->write($res);
 
