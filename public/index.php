@@ -1,5 +1,3 @@
-#!/usr/bin/env php
-
 <?php
 
 $autoloadPathLocal = __DIR__ . '/../vendor/autoload.php';
@@ -11,4 +9,4 @@ if (file_exists($autoloadPathLocal)) {
     require_once $autoloadPathGlobal;
 }
 
-App\Bootstrap\run();
+require __DIR__ . '/../routes/http.php';

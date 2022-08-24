@@ -55,7 +55,7 @@ class Consumer
     {
         $jsonData = json_decode($message->getBody(), true);
 
-        $connection = new Connection();
+        $connection = new Connection(__DIR__ . '/../../configs/dbconnect.ini');
         $connection->insert($jsonData);
 
         $message->ack();
