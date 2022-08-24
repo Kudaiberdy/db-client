@@ -1,8 +1,8 @@
 <?php
 
-namespace App\DBConnections;
+namespace App\Connections;
 
-class Connection extends \PDO
+class DBConnection extends \PDO
 {
     public function __construct(string $pathToConf)
     {

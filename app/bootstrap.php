@@ -2,9 +2,11 @@
 
 namespace App\Bootstrap;
 
+use App\Connections\AMQPConnection;
+
 function run()
 {
-    $consumer = new \App\AMQPConsumers\Consumer();
-
-    $consumer->listen();
+    $connection = new AMQPConnection(__DIR__ . '/../configs/amqpconnection.ini');
+    $connection->declareConnection('router', 'push-queue', 'push');
+    $connection->listen();
 }
