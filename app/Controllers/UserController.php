@@ -17,10 +17,14 @@ class UserController
         $dbConnection = new DBConnection(__DIR__ . '/../../configs/dbconnection.ini');
 
         $cacheKey = "{$key}:{$value}";
-        $result = json_encode($dbConnection->index($key, $value));
-        $cache->add($cacheKey, $result);
-        $response->getBody()->write($result);
+        $result = $cache->get($cacheKey);
 
+        if ($result === false) {
+            $result = json_encode($dbConnection->index($key, $value));
+        }
+
+        $response->getBody()->write($result);
+        $cache->add($cacheKey, $result);
         return $response
             ->withHeader('Content-Type', 'application/json');
     }

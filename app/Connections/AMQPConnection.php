@@ -41,7 +41,7 @@ class AMQPConnection extends AMQPStreamConnection
         $this->channel->queue_bind($queue, $exchange, $routingKey);
     }
 
-    public function listen($dbconnection, $cache)
+    public function listen()
     {
         $this->channel->basic_consume(
             $this->queue,
@@ -50,8 +50,7 @@ class AMQPConnection extends AMQPStreamConnection
             false,
             false,
             false,
-            [$this, 'messageProcessing'],
-
+            [$this, 'messageProcessing']
         );
 
         while ($this->channel->is_consuming()) {
@@ -59,7 +58,7 @@ class AMQPConnection extends AMQPStreamConnection
         }
     }
 
-    public function addDBConnetions(&$dbConnection)
+    public function addDBConnection(&$dbConnection)
     {
         $this->dbConnection = $dbConnection;
     }

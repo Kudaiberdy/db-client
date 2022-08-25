@@ -35,6 +35,7 @@ class DBConnection extends \PDO
                 VALUES ('{$name}', '{$phone}', '{$country}', '{$region}', '{$numberrange}', '{$email}')";
         try {
             $this->query($statment)->execute();
+            return true;
         } catch (\PDOException $e) {
             return $e;
         }
@@ -50,22 +51,5 @@ class DBConnection extends \PDO
         } catch (\PDOException $e) {
             return $e;
         }
-    }
-
-    public function dumpEmailsToCache($cache)
-    {
-        $statment = "SELECT email FROM users";
-
-        try {
-            $dump = $this->query($statment)->fetchAll(self::FETCH_ASSOC);
-            $emails = array_reduce($dump, function ($acc, $email) {
-                $acc[] = $email['email'];
-                return $acc;
-            }, []);
-        } catch (\PDOException $e) {
-            return $e;
-        }
-
-        $cache->set('emails', $emails);
     }
 }
