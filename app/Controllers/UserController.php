@@ -23,7 +23,7 @@ class UserController
                 ->withHeader('Content-Type', 'application/json');
         }
 
-        $cache->flush();
+        $cache->delete($cacheKey);
         $dbConnection = new DBConnection(__DIR__ . '/../../configs/dbconnection.ini');
         $res = json_encode($dbConnection->index($key, $value));
         $cache->add($cacheKey, $res);

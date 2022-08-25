@@ -65,6 +65,7 @@ class AMQPConnection extends AMQPStreamConnection
 
         $cache = new \Memcached();
         $cache->addServer(...parse_ini_file(__DIR__ . '/../../configs/memcachedconnection.ini'));
+        $cache->flush();
         $connection->dumpEmailsToCache($cache);
 
         $message->ack();
