@@ -14,20 +14,12 @@ class UserController
 
         $cache = new \Memcached();
         $cache->addServer(...parse_ini_file(__DIR__ . '/../../configs/memcachedconnection.ini'));
-        $cacheKey = "{$key}:{$value}";
-        $res = $cache->get($cacheKey);
-
-        if ($res) {
-            $response->getBody()->write($res);
-            return $response
-                ->withHeader('Content-Type', 'application/json');
-        }
-
-        $cache->delete($cacheKey);
         $dbConnection = new DBConnection(__DIR__ . '/../../configs/dbconnection.ini');
-        $res = json_encode($dbConnection->index($key, $value));
-        $cache->add($cacheKey, $res);
-        $response->getBody()->write($res);
+
+        $cacheKey = "{$key}:{$value}";
+        $result = json_encode($dbConnection->index($key, $value));
+        $cache->add($cacheKey, $result);
+        $response->getBody()->write($result);
 
         return $response
             ->withHeader('Content-Type', 'application/json');

@@ -2,7 +2,6 @@
 
 namespace App\Connections;
 
-use http\Encoding\Stream\Inflate;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
@@ -12,6 +11,8 @@ class AMQPConnection extends AMQPStreamConnection
     private $queue;
     private $routingKey;
     private $channel;
+    private $dbConnection;
+    private $cache;
 
     public function __construct(string $pathToConf)
     {
@@ -40,7 +41,7 @@ class AMQPConnection extends AMQPStreamConnection
         $this->channel->queue_bind($queue, $exchange, $routingKey);
     }
 
-    public function listen()
+    public function listen($dbconnection, $cache)
     {
         $this->channel->basic_consume(
             $this->queue,
@@ -49,7 +50,8 @@ class AMQPConnection extends AMQPStreamConnection
             false,
             false,
             false,
-            [$this, 'messageProcessing']
+            [$this, 'messageProcessing'],
+
         );
 
         while ($this->channel->is_consuming()) {
@@ -57,16 +59,22 @@ class AMQPConnection extends AMQPStreamConnection
         }
     }
 
+    public function addDBConnetions(&$dbConnection)
+    {
+        $this->dbConnection = $dbConnection;
+    }
+
+    public function addCache(&$cache)
+    {
+        $this->cache = $cache;
+    }
+
     public function messageProcessing(AMQPMessage $message)
     {
         $jsonData = json_decode($message->getBody(), true);
-        $connection = new DBConnection(__DIR__ . '/../../configs/dbconnection.ini');
-        $connection->insert($jsonData);
-
-        $cache = new \Memcached();
-        $cache->addServer(...parse_ini_file(__DIR__ . '/../../configs/memcachedconnection.ini'));
-        $cache->flush();
-        $connection->dumpEmailsToCache($cache);
+        $this->dbConnection->insert($jsonData);
+        $this->cache->flush();
+        $this->dbConnection->dumpEmailsToCache($this->cache);
 
         $message->ack();
     }
